@@ -1,0 +1,9 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+Options All -Indexes
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+
+RewriteRule ^item/([0-9]+)$ pages/item.php?item=$1
+RewriteRule ^categoria/([0-9]+)$ pages/categories.php?category=$1

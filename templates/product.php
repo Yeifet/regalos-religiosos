@@ -1,25 +1,14 @@
-<?php
-include_once 'controls/config.php';
-
-$categories = json_decode(file_get_contents(URL.'api/api.php?action=categories'), true);
-$arrCategories = [];
-
-foreach ($categories as $category) {
-    $arrCategories += [$category['id'] => $category['name']];
-}
-
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regalos Religiosos</title>
+    <title><?php echo $data['name']; ?></title>
     <link rel="shortcut icon" href="<?php echo URL.'assets/img/logo.png';?>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="<?php echo URL?>assets/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -67,28 +56,27 @@ foreach ($categories as $category) {
         </div>
     </div>
 
-    <div class="pt-16 w-full flex bg-gray-200 flex-col">
-        <div class="w-full h-96 bg-[url('assets/img/img1.jpg')] bg-cover"></div>
-        <main class="container max-w-screen-xl mx-auto p-5 bg-white rounded-md">
-            <?php
-                $response = json_decode(file_get_contents(URL.'api/api.php?action=getallbycategory'), true);
-                $keys = array_keys($response);
+    <div class="pt-16 w-full flex bg-gray-200 h-screen">
+        <main class="container max-w-screen-xl mx-auto p-5 bg-white rounded-md flex items-center justify-center">
+            <div class="p-2 shadow-xl rounded-md grid md:grid-cols-2">
 
-                for($i = 0; $i < count($keys); $i++) {
-            ?>
-                <h2 class="text-4xl md:text-5xl text-yellow-600 new_font text-center my-2"><?php echo $arrCategories[$keys[$i]]; ?></h2>
-                <div class="grid gap-4 items-center justify-items-center autorow">
-                    <?php
-                        
-                        foreach($response[$keys[$i]] as $item){
-                            include('templates/item.php');
-                        }
-                    
-                    ?>
+                <div class="h-72 w-72 rounded-md overflow-hidden">
+                    <img src="<?php echo URL ?>uploads/<?php echo $data['img']?>" class="h-full w-full object-contain" alt="">
                 </div>
-            <?php
-                }
-            ?>
+                <div class="p-4 w-72 bg-white mt-2 shadow-md rounded-md">
+                    <h1 class="text-xl"><?php echo $data['name']; ?></h1>
+                    <p class="text-slate-700"><?php echo $data['description']; ?></p>
+                    <p class="text-slate-700">$<?php echo $data['price']; ?> COP</p>
+                    <p class="text-slate-700">Medida: <?php echo $data['size']; ?> cm</p>
+                    <div class="flex h-8 rounded-md overflow-hidden max-w-max">
+                        <button class="w-8 h-full bg-stone-900 text-white text-2xl" id="btnItemRemove">-</button>
+                        <p class="w-8 h-full flex items-center justify-center" id="counter">0</p>
+                        <button class="w-8 h-full bg-orange-500 text-white text-2xl" id="btnItemAdd">+</button>
+                        <input type="hidden" value="<?php echo $data['id'] ?>">
+                    </div>
+                </div>
+
+            </div>            
         </main>
     </div>
 
@@ -101,7 +89,9 @@ foreach ($categories as $category) {
     </a>
 
     <footer class="w-full h-72 bg-black"></footer>
+    <input type="hidden" value="<?php echo $data['id'] ?>" id="itemId">
     <input type="hidden" id="route" value="<?php echo URL ?>">
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/item.js"></script>
 </body>
 </html>

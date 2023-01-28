@@ -1,13 +1,5 @@
 <?php
-include_once 'controls/config.php';
-
-$categories = json_decode(file_get_contents(URL.'api/api.php?action=categories'), true);
-$arrCategories = [];
-
-foreach ($categories as $category) {
-    $arrCategories += [$category['id'] => $category['name']];
-}
-
+include_once '../controls/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -15,11 +7,11 @@ foreach ($categories as $category) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regalos Religiosos</title>
+    <title>Pedidos</title>
     <link rel="shortcut icon" href="<?php echo URL.'assets/img/logo.png';?>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="<?php echo URL?>assets/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -59,49 +51,50 @@ foreach ($categories as $category) {
         </div>
     </header>
 
-    <div class="fixed top-0 left-full w-full h-screen bg-[#0009] z-50 flex items-center justify-center transition-all" id="modalCart">
-        <button class="text-2xl text-white bg-red-600 rounded-md flex w-8 h-8 items-center justify-center absolute top-10 right-10" id="btnCloseCart">X</button>
-        <div class="bg-white rounded-md p-2 w-72 h-96 md:w-1/2 flex flex-col items-center">
-            <div class="grid gap-4 items-center justify-items-center autorow overflow-y-scroll w-full h-full" id="cartContainer"></div>
-            <a href="<?php echo URL.'pages/pedidos.php' ?>" class="btnAdd flex py-1 px-4 rounded-md bg-yellow-500 active:bg-yellow-600 text-white my-1">Encargar</a>
-        </div>
-    </div>
-
-    <div class="pt-16 w-full flex bg-gray-200 flex-col">
-        <div class="w-full h-96 bg-[url('assets/img/img1.jpg')] bg-cover"></div>
-        <main class="container max-w-screen-xl mx-auto p-5 bg-white rounded-md">
-            <?php
-                $response = json_decode(file_get_contents(URL.'api/api.php?action=getallbycategory'), true);
-                $keys = array_keys($response);
-
-                for($i = 0; $i < count($keys); $i++) {
-            ?>
-                <h2 class="text-4xl md:text-5xl text-yellow-600 new_font text-center my-2"><?php echo $arrCategories[$keys[$i]]; ?></h2>
-                <div class="grid gap-4 items-center justify-items-center autorow">
-                    <?php
-                        
-                        foreach($response[$keys[$i]] as $item){
-                            include('templates/item.php');
-                        }
-                    
-                    ?>
-                </div>
-            <?php
-                }
-            ?>
+    <div class="pt-16 w-full flex bg-white h-screen">
+        <main class="container max-w-screen-md mx-auto p-5">
+            <div class="p-2">
+                <h2 class="text-lg">Tu Pedido</h2>
+            </div>
+            <div class="bg-gray-300 p-2 flex">
+                <h2 class="text-xl">Elementos</h2>
+                <p class="text-xl">Total: <span id="total">$50.000</span></p>
+            </div>
+            <div class="w-full" id="listContainer">
+                
+            </div>
+            <div class="w-full flex items-center">
+                <form class="w-80 bg-zinc-300 text-slate-900 p-2" id="formOrders">
+                    <div class="border-b-2 border-gray-400 py-2">
+                        <p class="text-base">Complete todos los campos</p>
+                        <p class="text-sm font-light">Complete todos los campos para procesar su pedido</p>
+                    </div>
+                    <div class="name">
+                        <label for="" class="font-light text-base">Nombre</label>
+                        <input type="name" name="name" id="name" class="w-full rounded-md" required>
+                    </div>
+                    <div class="">
+                        <label for="email" class="font-light text-base">Correo</label>
+                        <input type="email" name="email" id="email" class="w-full rounded-md" required>
+                    </div>
+                    <div class="">
+                        <label for="phone" class="font-light text-base">Teléfono</label>
+                        <input type="phone" name="phone" id="phone" class="w-full rounded-md" required>
+                    </div>
+                    <div class="flex justify-center">
+                        <button class="py-2 px-4 my-2 rounded-md bg-yellow-600 text-white">Confirmar</button>
+                    </div>
+                </form>
+            </div>
         </main>
     </div>
-
-    <button class="py-2 px-3 bg-yellow-600 active:bg-orange-500 rounded-full fixed bottom-10 right-10" id="cartBtn">
-        <i class='bx bx-cart text-white text-2xl'></i>
-    </button>
 
     <a href="https://api.whatsapp.com/send?phone=+57 314 6678697&text=Hola, me gustaría hacer un pedido." target="_blank" class="py-2 px-3 bg-lime-600 active:bg-lime-800 rounded-full fixed bottom-24 right-10">
         <i class='bx bxl-whatsapp text-white text-2xl'></i>
     </a>
 
-    <footer class="w-full h-72 bg-black"></footer>
     <input type="hidden" id="route" value="<?php echo URL ?>">
-    <script src="assets/js/main.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../assets/js/orders.js"></script>
 </body>
 </html>

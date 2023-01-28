@@ -1,11 +1,12 @@
 <?php
-include_once 'controls/config.php';
+include_once '../controls/config.php';
 
-$categories = json_decode(file_get_contents(URL.'api/api.php?action=categories'), true);
-$arrCategories = [];
+if (isset($_GET['category'])) {
+    $category = json_decode(file_get_contents(URL.'api/api.php?action=category&id='.$_GET['category']), true);
 
-foreach ($categories as $category) {
-    $arrCategories += [$category['id'] => $category['name']];
+    $items = json_decode(file_get_contents(URL.'api/api.php?action=getbycategory&category='.$_GET['category']), true);
+} else {
+    echo json_encode(['status' => 'error']);
 }
 
 ?>
@@ -15,15 +16,15 @@ foreach ($categories as $category) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regalos Religiosos</title>
-    <link rel="shortcut icon" href="<?php echo URL.'assets/img/logo.png';?>">
+    <link rel="shortcut icon" href="<?php echo URL ?>assets/img/logo.png">
+    <title><?php echo $category['name']; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="w-full fixed top-0 left-0 shadow-xl bg-gradient-to-t from-yellow-700 to-yellow-500 z-50">
+<header class="w-full fixed top-0 left-0 shadow-xl bg-gradient-to-t from-yellow-700 to-yellow-500 z-50">
         <div class="container mx-auto flex justify-between px-4 py-2 h-16">
             <div class="w-20 h-full">
                 <a href="<?php echo URL ?>">
@@ -68,27 +69,18 @@ foreach ($categories as $category) {
     </div>
 
     <div class="pt-16 w-full flex bg-gray-200 flex-col">
-        <div class="w-full h-96 bg-[url('assets/img/img1.jpg')] bg-cover"></div>
+        <div class="w-full h-96 bg-[url('../assets/img/img1.jpg')] bg-cover"></div>
         <main class="container max-w-screen-xl mx-auto p-5 bg-white rounded-md">
-            <?php
-                $response = json_decode(file_get_contents(URL.'api/api.php?action=getallbycategory'), true);
-                $keys = array_keys($response);
-
-                for($i = 0; $i < count($keys); $i++) {
-            ?>
-                <h2 class="text-4xl md:text-5xl text-yellow-600 new_font text-center my-2"><?php echo $arrCategories[$keys[$i]]; ?></h2>
-                <div class="grid gap-4 items-center justify-items-center autorow">
-                    <?php
-                        
-                        foreach($response[$keys[$i]] as $item){
-                            include('templates/item.php');
-                        }
+            <h2 class="text-4xl md:text-5xl text-yellow-600 new_font text-center my-2"><?php echo $category['name']; ?></h2>
+            <div class="grid gap-4 items-center justify-items-center autorow">
+                <?php
                     
-                    ?>
-                </div>
-            <?php
-                }
-            ?>
+                    foreach($items as $item){
+                        include('../templates/item.php');
+                    }
+                
+                ?>
+            </div>
         </main>
     </div>
 
@@ -102,6 +94,6 @@ foreach ($categories as $category) {
 
     <footer class="w-full h-72 bg-black"></footer>
     <input type="hidden" id="route" value="<?php echo URL ?>">
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

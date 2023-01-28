@@ -7,3 +7,16 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+@font-face {
+    font-family: gotham;
+    src: url('../fonts/gotham.otf');
+}
+
+.new_font {
+    font-family: 'gotham', cursive;
+}
+
+.autorow{
+    grid-template-columns: repeat(auto-fill ,minmax(160px, 1fr));
+}
